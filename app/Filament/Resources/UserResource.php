@@ -14,6 +14,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Rawilk\FilamentPasswordInput\Password;
 
 class UserResource extends Resource
 {
@@ -33,6 +34,10 @@ class UserResource extends Resource
                     ->email()
                     ->required()
                     ->placeholder(__('Email')),
+                Password::make('password')
+                    ->placeholder(__('Password')),
+                Password::make('password_confirmation')
+                    ->placeholder(__('Confirm Password')),
             ])->columns(1);
     }
 

@@ -5,7 +5,12 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\BookResource\Pages;
 use App\Filament\Resources\BookResource\RelationManagers;
 use App\Models\Book;
+use App\Models\Category;
+use App\Models\Tag;
 use Filament\Forms;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -23,7 +28,50 @@ class BookResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('title')
+                    ->autofocus()
+                    ->required()
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 3,
+                    ])
+                    ->placeholder(__('Title')),
+                TextInput::make('amount')
+                    ->required()
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 1,
+                    ])
+                    ->placeholder(__('Amount')),
+                Select::make('category_id')
+                    ->options(Category::pluck('name', 'id')->toArray())
+                    ->required()
+                    ->searchable()
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 2,
+                    ])
+                    ->placeholder(__('Category')),
+                Select::make('tags')
+                    ->options(Tag::pluck('name', 'id')->toArray())
+                    ->multiple()
+                    ->searchable()
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 2,
+                    ])
+                    ->placeholder(__('Tags')),
+                RichEditor::make('description')
+                    ->required()
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 4,
+                    ])
+                    ->placeholder(__('Description')),
+            ])->columns([
+                'sm' => 1,
+                'md' => 2,
+                'lg' => 4,
             ]);
     }
 
