@@ -52,7 +52,7 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->modalWidth('lg'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([

@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TagResource\Pages;
 use App\Filament\Resources\TagResource\RelationManagers;
 use App\Models\Tag;
+use Faker\Provider\ar_EG\Text;
 use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -23,21 +26,27 @@ class TagResource extends Resource
     {
         return $form
             ->schema([
-                //
-            ]);
+                TextInput::make('name')
+                    ->autofocus()
+                    ->required()
+                    ->unique(static::getModel(), 'name')
+                    ->placeholder(__('Nama Tag')),
+            ])->columns(1);
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->modalWidth('lg'),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
