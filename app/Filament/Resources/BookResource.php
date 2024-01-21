@@ -14,8 +14,14 @@ use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -130,35 +136,59 @@ class BookResource extends Resource
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('category.name')
+                TextColumn::make('description')
+                    ->html()
+                    ->limit(50)
+                    ->wrap()
                     ->searchable()
                     ->sortable(),
                 TextColumn::make('amount')
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('tags')
+                TextColumn::make('category.name')
+                    ->searchable()
+                    ->badge()
+                    ->sortable(),
+                TextColumn::make('tags.name')
+                    ->badge()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('file')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('cover')
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('description')
-                    ->searchable()
-                    ->sortable(),
+                SpatieMediaLibraryImageColumn::make('cover')
+                    ->collection('covers'),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
+            ]);
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                TextEntry::make('title')
+                    ->label(__('Title')),
+                TextEntry::make('description')
+                    ->html()
+                    ->label(__('Description')),
+                TextEntry::make('amount')
+                    ->label(__('Amount')),
+                TextEntry::make('category.name')
+                    ->badge()
+                    ->label(__('Category')),
+                TextEntry::make('tags.name')
+                    ->badge()
+                    ->label(__('Tags')),
+                SpatieMediaLibraryImageEntry::make('cover')
+                    ->collection('covers'),
             ]);
     }
 
