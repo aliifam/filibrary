@@ -23,7 +23,7 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     public static function form(Form $form): Form
     {
@@ -35,7 +35,7 @@ class UserResource extends Resource
                     ->placeholder(__('Name')),
                 TextInput::make('email')
                     ->email()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->required()
                     ->placeholder(__('Email')),
                 Password::make('password')
@@ -45,6 +45,7 @@ class UserResource extends Resource
                     ->dehydrated(fn ($state): bool => filled($state))
                     ->dehydrateStateUsing(fn ($state): string => Hash::make($state))
                     ->live(debounce: 500)
+                    ->required(fn (string $operation): bool => $operation === "create")
                     ->same('passwordConfirmation')
                     ->placeholder(__('Password')),
                 Password::make('passwordConfirmation')
@@ -70,7 +71,15 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->modalWidth('lg'),
+                Tables\Actions\EditAction::make()
+                    ->modalWidth('lg')
+                    ->mutateFormDataUsing(function (array $data): array {
+                        //if password is not changed, remove password from data
+                        if (!isset($data['password'])) {
+                            unset($data['password']);
+                        }
+                        return $data;
+                    }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
