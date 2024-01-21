@@ -16,6 +16,7 @@ use Filament\Forms\Form;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -50,6 +51,7 @@ class BookResource extends Resource
                     ])
                     ->placeholder(__('Amount')),
                 Select::make('category_id')
+                    ->relationship('category', 'name')
                     ->label(__('Category'))
                     ->options(Category::pluck('name', 'id')->toArray())
                     ->required()
@@ -58,8 +60,21 @@ class BookResource extends Resource
                         'sm' => 1,
                         'md' => 2,
                     ])
-                    ->placeholder(__('Category')),
+                    ->placeholder(__('Category'))
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->placeholder(__('Category Name')),
+                    ])
+                    ->editOptionForm([
+                        TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->placeholder(__('Category Name')),
+                    ]),
                 Select::make('tags')
+                    ->relationship('tags', 'name')
                     ->options(Tag::pluck('name', 'id')->toArray())
                     ->multiple()
                     ->searchable()
@@ -67,12 +82,18 @@ class BookResource extends Resource
                         'sm' => 1,
                         'md' => 2,
                     ])
-                    ->placeholder(__('Tags')),
+                    ->placeholder(__('Tags'))
+                    ->createOptionForm([
+                        TextInput::make('name')
+                            ->label(__('Name'))
+                            ->required()
+                            ->placeholder(__('Tag Name')),
+                    ]),
                 SpatieMediaLibraryFileUpload::make('file')
                     ->required()
                     ->acceptedFileTypes(['application/pdf'])
                     ->collection('books')
-                    ->maxSize(10)
+                    ->maxSize(1024 * 10)
                     ->columnSpan([
                         'sm' => 1,
                         'md' => 2,
@@ -80,7 +101,7 @@ class BookResource extends Resource
                     ->placeholder(__('Book File')),
                 SpatieMediaLibraryFileUpload::make('cover')
                     ->required()
-                    ->maxSize(2)
+                    ->maxSize(1024 * 2)
                     ->acceptedFileTypes(['image/*'])
                     ->collection('covers')
                     ->columnSpan([
@@ -106,7 +127,27 @@ class BookResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('title')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('category.name')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('amount')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('tags')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('file')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('cover')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('description')
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
