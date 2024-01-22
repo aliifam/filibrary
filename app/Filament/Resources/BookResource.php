@@ -25,6 +25,7 @@ use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -159,7 +160,17 @@ class BookResource extends Resource
                     ->collection('covers'),
             ])
             ->filters([
-                //
+                SelectFilter::make('category_id')
+                    ->label(__('Category'))
+                    ->relationship('category', 'name')
+                    ->options(Category::pluck('name', 'id')->toArray())
+                    ->placeholder(__('Category')),
+                SelectFilter::make('tags')
+                    ->label(__('Tags'))
+                    ->relationship('tags', 'name')
+                    ->options(Tag::pluck('name', 'id')->toArray())
+                    ->multiple()
+                    ->placeholder(__('Tags')),
             ])
             ->actions([
                 ViewAction::make(),
