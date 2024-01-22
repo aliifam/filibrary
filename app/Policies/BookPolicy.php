@@ -18,6 +18,7 @@ class BookPolicy
      */
     public function viewAny(User $user): bool
     {
+        //if super admin can see all books if not he can see only his books
         return $user->can('view_any_book');
     }
 
@@ -30,6 +31,12 @@ class BookPolicy
      */
     public function view(User $user, Book $book): bool
     {
+        //if super admin can see all books
+        // if (!$user->hasRole('super-admin')) {
+        //     //if user is not super admin, he can see only his books
+        //     dd($user->can('view_book') && $user->id === $book->user_id);
+        //     return $user->can('view_book') && $user->id === $book->user_id;
+        // }
         return $user->can('view_book');
     }
 

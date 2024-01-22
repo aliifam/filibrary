@@ -7,6 +7,7 @@ use App\Filament\Resources\BookResource\RelationManagers;
 use App\Models\Book;
 use App\Models\Category;
 use App\Models\Tag;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Forms;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -75,13 +76,13 @@ class BookResource extends Resource
                             ->label(__('Name'))
                             ->required()
                             ->placeholder(__('Category Name')),
-                    ])
-                    ->editOptionForm([
-                        TextInput::make('name')
-                            ->label(__('Name'))
-                            ->required()
-                            ->placeholder(__('Category Name')),
                     ]),
+                // ->editOptionForm([
+                //     TextInput::make('name')
+                //         ->label(__('Name'))
+                //         ->required()
+                //         ->placeholder(__('Category Name')),
+                // ]),
                 Select::make('tags')
                     ->relationship('tags', 'name')
                     ->options(Tag::pluck('name', 'id')->toArray())
@@ -163,6 +164,13 @@ class BookResource extends Resource
                     ->sortable(),
                 SpatieMediaLibraryImageColumn::make('cover')
                     ->collection('covers'),
+                TextColumn::make('user.email')
+                    ->label(__('Created By'))
+                    ->searchable()
+                    ->sortable()
+                    ->hidden(
+                        fn () => !auth()->user()->hasRole('super_admin')
+                    ),
             ])
             ->filters([
                 SelectFilter::make('category_id')
@@ -207,5 +215,15 @@ class BookResource extends Resource
             'edit' => Pages\EditBook::route('/{record}/edit'),
             'view' => Pages\ViewBook::route('/{record}'),
         ];
+    }
+
+    //admin can view all books but user can view only his books
+    public static function getEloquentQuery(): Builder
+    {
+        if (auth()->user()->hasRole('super_admin')) {
+            return parent::getEloquentQuery();
+        }
+        // dd(auth()->user()->roles()->get());
+        return parent::getEloquentQuery()->where('user_id', auth()->id());
     }
 }
