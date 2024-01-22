@@ -120,6 +120,11 @@ class BookResource extends Resource
                     ->placeholder(__('Book Cover')),
                 RichEditor::make('description')
                     ->required()
+                    ->disableToolbarButtons([
+                        'attachFiles',
+                    ])
+                    ->fileAttachmentsDirectory('attachments')
+                    ->fileAttachmentsVisibility('public')
                     ->columnSpan([
                         'sm' => 1,
                         'md' => 4,
@@ -170,11 +175,15 @@ class BookResource extends Resource
                     ->relationship('tags', 'name')
                     ->options(Tag::pluck('name', 'id')->toArray())
                     ->multiple()
+                    ->searchable()
+                    ->preload()
                     ->placeholder(__('Tags')),
             ])
             ->actions([
-                ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make()
+                    ->iconButton(),
+                Tables\Actions\EditAction::make()
+                    ->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
