@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
@@ -38,6 +39,13 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->required()
                     ->placeholder(__('Email')),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->required()
+                    ->preload()
+                    ->searchable()
+                    ->placeholder(__('Roles')),
                 Password::make('password')
                     ->password()
                     ->rule(RulesPassword::default())
@@ -65,7 +73,10 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->searchable()
                     ->sortable(),
-
+                TextColumn::make('roles.name')
+                    ->badge()
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 //
