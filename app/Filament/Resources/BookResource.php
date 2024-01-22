@@ -13,6 +13,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Actions;
+use Filament\Infolists\Components\Actions\Action;
 use Filament\Infolists\Components\SpatieMediaLibraryImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ViewEntry;
@@ -160,35 +162,13 @@ class BookResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
                 ViewAction::make(),
+                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
-    }
-
-    public static function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                TextEntry::make('title')
-                    ->label(__('Title')),
-                TextEntry::make('description')
-                    ->html()
-                    ->label(__('Description')),
-                TextEntry::make('amount')
-                    ->label(__('Amount')),
-                TextEntry::make('category.name')
-                    ->badge()
-                    ->label(__('Category')),
-                TextEntry::make('tags.name')
-                    ->badge()
-                    ->label(__('Tags')),
-                SpatieMediaLibraryImageEntry::make('cover')
-                    ->collection('covers'),
             ]);
     }
 
@@ -205,6 +185,7 @@ class BookResource extends Resource
             'index' => Pages\ListBooks::route('/'),
             'create' => Pages\CreateBook::route('/create'),
             'edit' => Pages\EditBook::route('/{record}/edit'),
+            'view' => Pages\ViewBook::route('/{record}'),
         ];
     }
 }

@@ -34,21 +34,21 @@ class Book extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
-    public function registerMediaCollections(): void
-    {
-        $this->addMediaCollection('file')->singleFile();
-        $this->addMediaCollection('cover')->singleFile();
-    }
+    // public function registerMediaCollections(): void
+    // {
+    //     $this->addMediaCollection('file')->singleFile();
+    //     $this->addMediaCollection('cover')->singleFile();
+    // }
 
-    public function file()
-    {
-        return $this->hasOne(Media::class, 'model_id', 'id')->where('collection_name', 'file');
-    }
+    // public function file()
+    // {
+    //     return $this->hasOne(Media::class, 'model_id', 'id')->where('collection_name', 'file');
+    // }
 
-    public function cover()
-    {
-        return $this->hasOne(Media::class, 'model_id', 'id')->where('collection_name', 'cover');
-    }
+    // public function cover()
+    // {
+    //     return $this->hasOne(Media::class, 'model_id', 'id')->where('collection_name', 'cover');
+    // }
 
     public function getFileAttribute()
     {
